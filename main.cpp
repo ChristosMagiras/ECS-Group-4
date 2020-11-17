@@ -43,7 +43,7 @@ std::string callibration_window = "Calibration";
 cv::RNG rng(12345);
 cv::Mat debugImage;
 cv::Mat skinCrCbHist = cv::Mat::zeros(cv::Size(256, 256), CV_8UC1);
-cv::Mat calibration_screen = cv::Mat(1200, 1500, CV_8UC3, cv::Scalar::all(255));
+cv::Mat calibration_screen; //= cv::Mat(1200, 1500, CV_8UC3, cv::Scalar::all(255));
 // Timer for calibration, create it and start it
 std::clock_t start = std::clock();
 // set the callibration point
@@ -234,15 +234,15 @@ void findEyes(cv::Mat frame_gray, cv::Rect face) {
       calibration_point_x = (double)leftPupil.x / debugFace.size().width;
       printf("Calibration point x: %f\n", calibration_point_x);
       printf("Calibration circle x : %d\n", calibration_point.x);
-      if (calibration_point_x_standard - calibration_point_x < 0.0)
+      if (calibration_point_x_standard - calibration_point_x < -0.1)
       {
-          calibration_point.x = (int)((double)calibration_screen.size().width * 0.5 * calibration_point_x  / calibration_point_x_standard);
-          //calibration_point.x = (int)((double)(calibration_screen.size().width * 0.5 * calibration_point_x / calibration_point_x_standard) + eye_region_width*2.5);
+          //calibration_point.x = (int)((double)calibration_screen.size().width * 0.5 * calibration_point_x  / calibration_point_x_standard);
+          calibration_point.x = (int)((double)(calibration_screen.size().width * 0.5 * calibration_point_x / calibration_point_x_standard) + eye_region_width*2.5);
       }
-      else if (calibration_point_x_standard - calibration_point_x > 0.0)
+      else if (calibration_point_x_standard - calibration_point_x > 0.1)
       {
-          calibration_point.x = (int)((double)calibration_screen.size().width * 0.5 * calibration_point_x  / calibration_point_x_standard);
-          //calibration_point.x = (int)((double)(calibration_screen.size().width * 0.5 * calibration_point_x / calibration_point_x_standard) - eye_region_width*2.5);
+          //calibration_point.x = (int)((double)calibration_screen.size().width * 0.5 * calibration_point_x  / calibration_point_x_standard);
+          calibration_point.x = (int)((double)(calibration_screen.size().width * 0.5 * calibration_point_x / calibration_point_x_standard) - eye_region_width*2.5);
       }
       else
       {
@@ -262,7 +262,7 @@ void findEyes(cv::Mat frame_gray, cv::Rect face) {
       CV_RGB(255, 255, 255), //font color
       0.1);
 
-  //-- Find Eye Corners
+  //-- Find Eye Corners - ERRORS
   if (kEnableEyeCorner) {
     cv::Point2f leftRightCorner = findEyeCorner(faceROI(leftRightCornerRegion), true, false);
     leftRightCorner.x += leftRightCornerRegion.x;
